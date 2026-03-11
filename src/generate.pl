@@ -11,7 +11,6 @@
 
 % Gera um labirinto com as dimensoes dadas.
 % As dimensoes sao ajustadas para serem impares (requisito do algoritmo).
-% Se PlaceMarkers = true, coloca 'start' e 'exit' em posicoes aleatorias.
 generate_maze(NumLinhas, NumColunas, PlaceMarkers, GridFinal) :-
     ensure_odd(NumLinhas, Linhas),
     ensure_odd(NumColunas, Colunas),
@@ -51,7 +50,6 @@ carve_neighbors(Grid, Linha, Col, [(VL, VC)|Resto], NovoGrid) :-
     carve_maze(Grid1, VL, VC, Grid2),
     carve_neighbors(Grid2, Linha, Col, Resto, NovoGrid).
 carve_neighbors(Grid, Linha, Col, [_|Resto], NovoGrid) :-
-    % Vizinho ja visitado, pula pra o proximo
     carve_neighbors(Grid, Linha, Col, Resto, NovoGrid).
 
 % Retorna os vizinhos a 2 celulas de distancia
@@ -72,8 +70,6 @@ get_carve_neighbors(Grid, Linha, Col, Vizinhos) :-
         Vizinhos
     ).
 
-% Se PlaceMarkers = true, coloca 'start' e 'exit' em celulas vazias aleatorias.
-% Se false, retorna o grid como esta (usado no modo pega-pega).
 place_markers_if_needed(false, Grid, Grid).
 place_markers_if_needed(true, Grid, GridFinal) :-
     random_empty_pos(Grid, (SL, SC)),

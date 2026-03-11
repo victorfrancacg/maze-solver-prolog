@@ -1,6 +1,4 @@
 % Animacao da resolucao do labirinto no terminal.
-% Recebe uma lista de frames (grids) e exibe cada um
-% com um pequeno delay, criando o efeito de animacao.
 
 :- module(animate, [
     animate_solve/1,
@@ -9,7 +7,7 @@
 
 :- use_module(render).
 
-% delay de 200ms.
+% 200ms delay.
 animate_solve(Frames) :-
     animate_solve(Frames, 0.2).
 

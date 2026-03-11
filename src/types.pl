@@ -17,6 +17,8 @@ cell_char(start, 'S').
 cell_char(exit, 'E').
 cell_char(path, '@').
 cell_char(visited, 'o').
+cell_char(playerA, 'A').
+cell_char(playerB, 'B').
 
 % Cria um grid n x m preenchido com 'CelulaDefault'.
 % Exemplo: create_grid(3, 4, wall, G) cria um grid 3x4 de paredes.
