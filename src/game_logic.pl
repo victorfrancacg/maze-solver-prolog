@@ -6,7 +6,9 @@
 :- module(game_logic, [
     initial_game_state/2,
     initial_game_state/3,
-    check_result/2
+    check_result/2,
+    step_game/2,
+    run_game/2
 ]).
 
 :- use_module(types).
@@ -130,4 +132,35 @@ reconstruct_path_game(Pais, PosAtual, PosOrigem, Caminho) :-
     member(parent(PosAtual, Pai), Pais),
     reconstruct_path_game(Pais, Pai, PosOrigem, CaminhoAnterior),
     append(CaminhoAnterior, [PosAtual], Caminho).
+
+% Execucao de um turno:
+
+% Se o jogo ja terminou, nao faz nada.
+step_game(game_state(Grid, PosA, PosB, Turno, Resultado), game_state(Grid, PosA, PosB, Turno, Resultado)) :-
+    Resultado \= in_progress, !.
+
+% Turno do perseguidor (playerA): move A, verifica resultado, passa a vez.
+step_game(game_state(Grid, PosA, PosB, playerA, in_progress), NovoState) :-
+    ai_move_chaser(game_state(Grid, PosA, PosB, playerA, in_progress), NovaPosA),
+    check_result(game_state(Grid, NovaPosA, PosB, playerB, in_progress), Resultado),
+    NovoState = game_state(Grid, NovaPosA, PosB, playerB, Resultado).
+
+% Turno do fugitivo (playerB): move B, verifica resultado, passa a vez.
+step_game(game_state(Grid, PosA, PosB, playerB, in_progress), NovoState) :-
+    ai_move_runner(game_state(Grid, PosA, PosB, playerB, in_progress), NovaPosB),
+    check_result(game_state(Grid, PosA, NovaPosB, playerA, in_progress), Resultado),
+    NovoState = game_state(Grid, PosA, NovaPosB, playerA, Resultado).
+
+% Execucao do jogo completo
+
+% Roda o jogo ate terminar, acumulando todos os estados (para animacao).
+% Inclui o estado inicial na lista.
+run_game(GameState, [GameState]) :-
+    GameState = game_state(_, _, _, _, Resultado),
+    Resultado \= in_progress, !.
+
+run_game(GameState, [GameState | RestoEstados]) :-
+    GameState = game_state(_, _, _, _, in_progress),
+    step_game(GameState, NovoState),
+    run_game(NovoState, RestoEstados).
 
